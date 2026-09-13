@@ -177,16 +177,32 @@ export async function startApp(): Promise<{ close: () => Promise<void> }> {
     });
   }
 
-  // The local binary (no npx wrapper) in its own process group, so
-  // cleanup kills the whole tree — a surviving server from a previous
-  // run would serve a STALE build to these tests.
+  // The local CLI (no npx wrapper), so cleanup can kill the whole tree —
+  // a surviving server from a previous run would serve a STALE build to
+  // these tests.
+  //
+  // Run it through `process.execPath` rather than `node_modules/.bin/next`:
+  // on Windows that path is a `.cmd` shim, which `spawn` cannot execute
+  // without `shell: true`. The script below is what next's own `bin` field
+  // resolves to, so this is the same entry point on every platform.
+  //
+  // `detached` buys a POSIX process group for the group-kill in killTree.
+  // On Windows it instead means "outlive the parent in a new console", which
+  // is the opposite of what we want — killTree walks the tree there instead.
   const child = spawn(
-    path.join(root, "node_modules", ".bin", "next"),
-    ["start", "-p", String(PORT), "-H", "127.0.0.1"],
+    process.execPath,
+    [
+      path.join(root, "node_modules", "next", "dist", "bin", "next"),
+      "start",
+      "-p",
+      String(PORT),
+      "-H",
+      "127.0.0.1",
+    ],
     {
       cwd: root,
       stdio: "ignore",
-      detached: true,
+      detached: process.platform !== "win32",
       env: { ...process.env, NODE_ENV: "production" },
     },
   );
@@ -222,6 +238,20 @@ export async function startApp(): Promise<{ close: () => Promise<void> }> {
 
 function killTree(pid: number | undefined): void {
   if (pid === undefined) return;
+
+  // Windows has no process groups, so `process.kill(-pid)` throws there and
+  // the fallback below would reach only `next start` itself — its workers
+  // would survive and serve a STALE build to the next run, defeating the
+  // freshness check above. `taskkill /T` walks the tree by PID instead.
+  if (process.platform === "win32") {
+    try {
+      execSync(`taskkill /pid ${pid} /T /F`, { stdio: "ignore" });
+    } catch {
+      // already gone
+    }
+    return;
+  }
+
   try {
     process.kill(-pid, "SIGTERM");
   } catch {
