@@ -29,7 +29,8 @@ export function ForgotPasswordForm() {
   if (sent) {
     return (
       <p className="max-w-sm text-sm text-muted">
-        重置邮件已发出（本地开发环境可在 Mailpit 收件箱查看）。请打开邮件中的链接设置新密码。
+        Reset email sent. Open the link in the email to choose a new password. (On the local
+        stack, check the Mailpit inbox.)
       </p>
     );
   }
@@ -37,7 +38,7 @@ export function ForgotPasswordForm() {
   return (
     <form onSubmit={onSubmit} className="flex w-full max-w-sm flex-col gap-3">
       <label className="flex flex-col gap-1 text-sm">
-        账号邮箱
+        Account email
         <input
           type="email"
           required
@@ -52,7 +53,7 @@ export function ForgotPasswordForm() {
         disabled={busy}
         className="rounded-md bg-brand-700 px-3 py-2 text-sm font-medium text-white disabled:opacity-50"
       >
-        {busy ? "发送中…" : "发送重置邮件"}
+        {busy ? "Sending…" : "Send reset email"}
       </button>
     </form>
   );

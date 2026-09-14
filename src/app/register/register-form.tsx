@@ -26,7 +26,9 @@ export function RegisterForm() {
       return;
     }
     if (!data.session) {
-      setError("注册成功，但未获得会话——请联系管理员检查邮件确认配置。");
+      setError(
+        "Signed up, but no session was returned. Ask an administrator to check the email confirmation settings.",
+      );
       setBusy(false);
       return;
     }
@@ -37,7 +39,7 @@ export function RegisterForm() {
   return (
     <form onSubmit={onSubmit} className="flex w-full max-w-sm flex-col gap-3">
       <label className="flex flex-col gap-1 text-sm">
-        邮箱
+        Email
         <input
           type="email"
           required
@@ -47,7 +49,7 @@ export function RegisterForm() {
         />
       </label>
       <label className="flex flex-col gap-1 text-sm">
-        密码（至少 6 位）
+        Password (at least 6 characters)
         <input
           type="password"
           required
@@ -63,10 +65,10 @@ export function RegisterForm() {
         disabled={busy}
         className="rounded-md bg-brand-700 px-3 py-2 text-sm font-medium text-white disabled:opacity-50"
       >
-        {busy ? "注册中…" : "注册"}
+        {busy ? "Signing up…" : "Sign up"}
       </button>
       <Link href="/login" className="text-center text-sm text-muted underline">
-        已有账号？登录
+        Already have an account? Log in
       </Link>
     </form>
   );

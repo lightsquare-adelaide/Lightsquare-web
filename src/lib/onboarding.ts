@@ -12,9 +12,9 @@ export function isValidHandle(handle: string): boolean {
 
 /** Human-readable validation problem, or null when acceptable. */
 export function handleProblem(handle: string): string | null {
-  if (handle.length === 0) return "Handle 不能为空";
+  if (handle.length === 0) return "Handle can’t be empty";
   if (!isValidHandle(handle)) {
-    return "Handle 只能含小写字母、数字、下划线，长度 3–30";
+    return "Handle must be 3–30 lowercase letters, digits or underscores";
   }
   return null;
 }
