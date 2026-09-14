@@ -12,12 +12,19 @@ let fresh: TestUser;
 let onboarded: TestUser;
 let app: { close: () => Promise<void> };
 
+// startApp() runs `next build` when .next is missing or older than its
+// inputs. From a clean checkout that takes well over Vitest's default 10s
+// hook timeout, which used to abort the hook and skip every test in this
+// file. The timeout is per-hook rather than global so the hermetic suite
+// keeps the strict default.
+const BUILD_HOOK_TIMEOUT_MS = 5 * 60 * 1000;
+
 beforeAll(async () => {
   app = await startApp();
   fresh = await createUser("fresh");
   onboarded = await createUser("onboard");
   await completeOnboarding(onboarded);
-});
+}, BUILD_HOOK_TIMEOUT_MS);
 
 afterAll(async () => {
   if (app) await app.close();
@@ -58,6 +65,34 @@ describe("P2 — middleware route protection (real Next server, real RLS)", () =
       redirect: "manual",
     });
     expect(res.status).toBe(200);
+  });
+
+  // Regression: /login?next= used to accept any value starting with "/",
+  // including the scheme-relative "//example.com", and the router then
+  // hard-navigated off-site after a successful login. The page passes the
+  // sanitised target to the client LoginForm as the `nextPath` prop, which
+  // is serialised into the RSC payload, so it can be read straight out of
+  // the rendered HTML. (The raw query string is echoed elsewhere in that
+  // payload, so the assertion is on the prop, not on the whole body.)
+  function renderedNextPath(html: string): string | null {
+    const m = html.match(/nextPath\\?":\\?"([^"\\]*)\\?"/);
+    return m ? m[1] : null;
+  }
+
+  it("login page keeps a same-site next target", async () => {
+    const res = await fetch(`${appBase()}/login?next=%2Fonboarding`, {
+      redirect: "manual",
+    });
+    expect(res.status).toBe(200);
+    expect(renderedNextPath(await res.text())).toBe("/onboarding");
+  });
+
+  it("login page drops a scheme-relative next target (open redirect)", async () => {
+    const res = await fetch(`${appBase()}/login?next=%2F%2Fexample.com`, {
+      redirect: "manual",
+    });
+    expect(res.status).toBe(200);
+    expect(renderedNextPath(await res.text())).toBe("/dashboard");
   });
 
   it("onboarded user gets the dashboard (200)", async () => {
