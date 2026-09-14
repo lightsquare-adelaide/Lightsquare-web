@@ -2,7 +2,7 @@ import { redirect } from "next/navigation";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { OnboardingForm } from "./onboarding-form";
 
-export const metadata = { title: "完成引导 — Lightsquare" };
+export const metadata = { title: "Complete your profile — Lightsquare" };
 
 export default async function OnboardingPage() {
   const supabase = await createSupabaseServerClient();
@@ -24,9 +24,10 @@ export default async function OnboardingPage() {
 
   return (
     <main className="mx-auto flex w-full max-w-5xl flex-col items-center gap-6 px-4 py-12">
-      <h1 className="text-2xl font-semibold">完成你的资料</h1>
+      <h1 className="text-2xl font-semibold">Complete your profile</h1>
       <p className="max-w-sm text-sm text-muted">
-        选择账号类型与类目、定一个公开 handle。完成前无法进入 Dashboard。
+        Choose your account type and category, and pick a public handle. You can’t reach the
+        dashboard until this is done.
       </p>
       <OnboardingForm categories={categories ?? []} currentHandle={profile?.handle ?? null} />
     </main>

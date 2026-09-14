@@ -27,7 +27,7 @@ export function OnboardingForm({
   // (react-hooks/set-state-in-effect).
   const problem = handleProblem(handle);
 
-  // 边输边查重: debounce 300ms, then ask the SECURITY DEFINER RPC as
+  // Live availability check: debounce 300ms, then ask the SECURITY DEFINER RPC as
   // the anonymous public would — never by reading the profiles table.
   useEffect(() => {
     if (problem) return;
@@ -47,19 +47,19 @@ export function OnboardingForm({
   return (
     <form action={formAction} className="flex w-full max-w-sm flex-col gap-4">
       <fieldset className="flex flex-col gap-2 text-sm">
-        <legend className="mb-1">账号类型</legend>
+        <legend className="mb-1">Account type</legend>
         <label className="flex items-center gap-2">
           <input type="radio" name="accountKind" value="individual" defaultChecked required />
-          个人
+          Individual
         </label>
         <label className="flex items-center gap-2">
           <input type="radio" name="accountKind" value="organisation" required />
-          组织
+          Organisation
         </label>
       </fieldset>
 
       <label className="flex flex-col gap-1 text-sm">
-        类目
+        Category
         <select
           name="categoryId"
           required
@@ -67,7 +67,7 @@ export function OnboardingForm({
           className="rounded-md border border-line bg-surface px-3 py-2"
         >
           <option value="" disabled>
-            选择你的类目…
+            Choose your category…
           </option>
           {categories.map((c) => (
             <option key={c.id} value={c.id}>
@@ -78,7 +78,7 @@ export function OnboardingForm({
       </label>
 
       <label className="flex flex-col gap-1 text-sm">
-        Handle（公开页地址用，3–30 位小写字母/数字/下划线）
+        Handle (your public page address: 3–30 lowercase letters, digits or underscores)
         <input
           name="handle"
           required
@@ -99,11 +99,11 @@ export function OnboardingForm({
       >
         {problem ??
           (availability === "checking"
-            ? "查询中…"
+            ? "Checking…"
             : availability === "free"
-              ? "✓ 可用"
+              ? "✓ Available"
               : availability === "taken"
-                ? "已被占用"
+                ? "Already taken"
                 : "")}
       </p>
 
@@ -114,7 +114,7 @@ export function OnboardingForm({
         disabled={pending || availability === "taken"}
         className="rounded-md bg-brand-700 px-3 py-2 text-sm font-medium text-white disabled:opacity-50"
       >
-        {pending ? "保存中…" : "完成引导，进入 Dashboard"}
+        {pending ? "Saving…" : "Finish and go to dashboard"}
       </button>
     </form>
   );

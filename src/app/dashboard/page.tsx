@@ -4,9 +4,9 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 export const metadata = { title: "Dashboard — Lightsquare" };
 
 const EMPTY_SECTIONS = [
-  { title: "作品", hint: "你还没有发布任何作品。作品集功能将在后续阶段开放。" },
-  { title: "活动", hint: "你还没有主办任何活动。活动功能将在后续阶段开放。" },
-  { title: "报名", hint: "你还没有报名任何活动。报名功能将在后续阶段开放。" },
+  { title: "Works", hint: "You haven’t published any works yet. Portfolios arrive in a later stage." },
+  { title: "Events", hint: "You haven’t hosted any events yet. Events arrive in a later stage." },
+  { title: "Registrations", hint: "You haven’t registered for any events yet. Registrations arrive in a later stage." },
 ] as const;
 
 export default async function DashboardPage() {
@@ -33,11 +33,11 @@ export default async function DashboardPage() {
     <main className="mx-auto flex w-full max-w-5xl flex-col gap-6 px-4 py-10">
       <header>
         <h1 className="text-2xl font-semibold">
-          你好，{profile.display_name}
+          Hi, {profile.display_name}
           <span className="ml-2 font-mono text-sm text-muted">@{profile.handle}</span>
         </h1>
         <p className="text-sm text-muted">
-          账号类型：{profile.account_kind === "organisation" ? "组织" : "个人"}
+          Account type: {profile.account_kind === "organisation" ? "Organisation" : "Individual"}
         </p>
       </header>
 

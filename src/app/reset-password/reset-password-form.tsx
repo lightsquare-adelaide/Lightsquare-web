@@ -42,14 +42,14 @@ export function ResetPasswordForm() {
   }
 
   if (done) {
-    return <p className="text-sm text-muted">密码已更新，正在进入 Dashboard…</p>;
+    return <p className="text-sm text-muted">Password updated. Taking you to your dashboard…</p>;
   }
 
   if (!recovery) {
     return (
       <p className="max-w-sm text-sm text-muted">
-        请从重置邮件中的链接进入本页（链接会自动登录并允许设置新密码）。没有收到？
-        可回到“忘记密码”重新发送。
+        Open this page from the link in your reset email. The link signs you in and lets you
+        set a new password. Didn’t get one? Go back to “Forgot password” to send it again.
       </p>
     );
   }
@@ -57,7 +57,7 @@ export function ResetPasswordForm() {
   return (
     <form onSubmit={onSubmit} className="flex w-full max-w-sm flex-col gap-3">
       <label className="flex flex-col gap-1 text-sm">
-        新密码（至少 6 位）
+        New password (at least 6 characters)
         <input
           type="password"
           required
@@ -73,7 +73,7 @@ export function ResetPasswordForm() {
         disabled={busy}
         className="rounded-md bg-brand-700 px-3 py-2 text-sm font-medium text-white disabled:opacity-50"
       >
-        {busy ? "更新中…" : "设置新密码"}
+        {busy ? "Updating…" : "Set new password"}
       </button>
     </form>
   );

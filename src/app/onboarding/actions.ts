@@ -27,9 +27,9 @@ export async function completeOnboarding(
 
   const problem = handleProblem(handle);
   if (problem) return { error: problem };
-  if (!isValidAccountKind(kind)) return { error: "请选择账号类型" };
+  if (!isValidAccountKind(kind)) return { error: "Choose an account type" };
   if (!Number.isInteger(categoryId) || categoryId <= 0) {
-    return { error: "请选择类目" };
+    return { error: "Choose a category" };
   }
 
   const { error } = await supabase
@@ -39,7 +39,7 @@ export async function completeOnboarding(
 
   if (error) {
     if (error.code === "23505") {
-      return { error: "这个 handle 刚被别人占了，换一个试试" };
+      return { error: "That handle was just taken by someone else. Try another." };
     }
     return { error: error.message };
   }

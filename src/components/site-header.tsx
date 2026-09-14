@@ -38,17 +38,17 @@ export async function SiteHeader() {
               </Link>
               <form action="/auth/signout" method="post">
                 <button type="submit" className="underline">
-                  登出
+                  Log out
                 </button>
               </form>
             </span>
           ) : (
             <>
               <Link href="/login" className="underline">
-                登录
+                Log in
               </Link>
               <Link href="/register" className="underline">
-                注册
+                Sign up
               </Link>
             </>
           )}

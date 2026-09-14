@@ -30,7 +30,7 @@ export function LoginForm({ nextPath }: { nextPath: string }) {
   return (
     <form onSubmit={onSubmit} className="flex w-full max-w-sm flex-col gap-3">
       <label className="flex flex-col gap-1 text-sm">
-        邮箱
+        Email
         <input
           type="email"
           required
@@ -40,7 +40,7 @@ export function LoginForm({ nextPath }: { nextPath: string }) {
         />
       </label>
       <label className="flex flex-col gap-1 text-sm">
-        密码
+        Password
         <input
           type="password"
           required
@@ -55,14 +55,14 @@ export function LoginForm({ nextPath }: { nextPath: string }) {
         disabled={busy}
         className="rounded-md bg-brand-700 px-3 py-2 text-sm font-medium text-white disabled:opacity-50"
       >
-        {busy ? "登录中…" : "登录"}
+        {busy ? "Logging in…" : "Log in"}
       </button>
       <div className="flex justify-between text-sm text-muted">
         <Link href="/register" className="underline">
-          没有账号？注册
+          No account? Sign up
         </Link>
         <Link href="/forgot-password" className="underline">
-          忘记密码
+          Forgot password
         </Link>
       </div>
     </form>
