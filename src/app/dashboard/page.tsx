@@ -1,7 +1,8 @@
+import { BRAND } from "@/lib/brand";
 import { redirect } from "next/navigation";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
-export const metadata = { title: "Dashboard — Lightsquare" };
+export const metadata = { title: `Dashboard — ${BRAND.name}` };
 
 const EMPTY_SECTIONS = [
   { title: "Works", hint: "You haven’t published any works yet. Portfolios arrive in a later stage." },
