@@ -11,7 +11,8 @@
  * Two independent checks: a shape test on the raw string, then a parse
  * against a fixed origin to confirm the target resolves to that origin.
  * The result is rebuilt from the parsed parts so the caller never sees the
- * raw input.
+ * raw input. The rebuilt path must pass the shape check too, because URL
+ * normalisation can turn dot segments into a scheme-relative destination.
  */
 export function safeNextPath(
   input: string | null | undefined,
@@ -30,5 +31,7 @@ export function safeNextPath(
   }
   if (resolved.origin !== "http://localhost") return fallback;
 
-  return `${resolved.pathname}${resolved.search}${resolved.hash}`;
+  const path = `${resolved.pathname}${resolved.search}${resolved.hash}`;
+  if (!/^\/(?![/\\])/.test(path)) return fallback;
+  return path;
 }

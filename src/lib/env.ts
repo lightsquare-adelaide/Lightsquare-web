@@ -38,4 +38,10 @@ export function parseEnv(source: Record<string, string | undefined>): AppEnv {
 }
 
 /** Build-time validated environment for app code. */
-export const env: AppEnv = parseEnv(process.env);
+// Next.js inlines public variables only when accessed by their explicit names.
+// Passing process.env itself leaves the browser reading an empty runtime object.
+export const env: AppEnv = parseEnv({
+  NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
+  NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+  NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL,
+});

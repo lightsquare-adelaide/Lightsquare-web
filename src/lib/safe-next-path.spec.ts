@@ -44,6 +44,19 @@ describe("safeNextPath", () => {
     expect(safeNextPath("example.com/dashboard")).toBe("/dashboard");
   });
 
+  it.each(["/.//example.com", "/a/..//example.com", "/%2e//example.com"])(
+    "rejects a target that becomes scheme-relative after normalisation: %s",
+    (input) => {
+      expect(safeNextPath(input)).toBe("/dashboard");
+    },
+  );
+
+  it("preserves safe normalised paths with query and hash", () => {
+    expect(safeNextPath("/events/../dashboard?tab=events#upcoming")).toBe(
+      "/dashboard?tab=events#upcoming",
+    );
+  });
+
   it("honours a custom fallback", () => {
     expect(safeNextPath("//example.com", "/")).toBe("/");
   });
