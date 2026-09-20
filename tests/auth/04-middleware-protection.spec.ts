@@ -95,6 +95,17 @@ describe("P2 — middleware route protection (real Next server, real RLS)", () =
     expect(renderedNextPath(await res.text())).toBe("/dashboard");
   });
 
+  it.each(["/.//example.com", "/a/..//example.com", "/%2e//example.com"])(
+    "login page drops a normalised external target: %s",
+    async (input) => {
+      const res = await fetch(`${appBase()}/login?next=${encodeURIComponent(input)}`, {
+        redirect: "manual",
+      });
+      expect(res.status).toBe(200);
+      expect(renderedNextPath(await res.text())).toBe("/dashboard");
+    },
+  );
+
   it("onboarded user gets the dashboard (200)", async () => {
     const cookie = await sessionCookieHeader(onboarded.email, onboarded.password);
     const res = await fetch(`${appBase()}/dashboard`, {
