@@ -15,6 +15,15 @@ const PUBLIC_PREFIXES = ["/login", "/register"];
 export async function middleware(request: NextRequest) {
   let response = NextResponse.next({ request });
 
+  // Auth refreshes and deletions must reach the browser on redirects too.
+  function redirectWithCookies(url: URL) {
+    const redirect = NextResponse.redirect(url);
+    for (const cookie of response.cookies.getAll()) {
+      redirect.cookies.set(cookie);
+    }
+    return redirect;
+  }
+
   const supabase = createServerClient(
     env.NEXT_PUBLIC_SUPABASE_URL,
     env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
@@ -52,7 +61,7 @@ export async function middleware(request: NextRequest) {
     const url = request.nextUrl.clone();
     url.pathname = "/dashboard";
     url.search = "";
-    return NextResponse.redirect(url);
+    return redirectWithCookies(url);
   }
 
   if (!isProtected) {
@@ -64,7 +73,7 @@ export async function middleware(request: NextRequest) {
     url.pathname = "/login";
     url.search = "";
     url.searchParams.set("next", path);
-    return NextResponse.redirect(url);
+    return redirectWithCookies(url);
   }
 
   // Incomplete onboarding: handle_new_user created the profile row at
@@ -89,7 +98,7 @@ export async function middleware(request: NextRequest) {
     url.pathname = "/onboarding";
     url.search = "";
     url.searchParams.set("next", path);
-    return NextResponse.redirect(url);
+    return redirectWithCookies(url);
   }
 
   return response;
